@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Songs\BEAT DO PICA PAU 2  - Então você quer ouvir batidas_ Que tal essa! %28FUNK REMIX%29 by Canal Sr. Nescau [ ezmp3.cc ].mp3" />
+  </ItemGroup>
+
+</Project>

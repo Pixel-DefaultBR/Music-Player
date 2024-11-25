@@ -1,0 +1,48 @@
+﻿@model List<string>
+
+<h1>Music Player</h1>
+<div class="music-player-container">
+    <div class="mp3-box">
+        <div class="show-title-container">
+            <marquee id="show-title"></marquee>
+        </div>
+        
+        <audio controls id="audio-box">
+            <source src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <aside class="opt-music">
+        @foreach (var file in Model)
+        {
+            <input type="hidden" class="get-title" value="@System.IO.Path.GetFileName(file)" />
+            <button class="btn btn-dark"></button>
+        }
+    </aside>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".opt-music .btn").each(function (index) {
+                var audioTitle = $(".get-title").eq(index).val();
+                var maxTitleLength = 20;
+                if (audioTitle.length > maxTitleLength) {
+                    audioTitle = audioTitle.substring(0, maxTitleLength) + '...';
+                }
+                $(this).text(audioTitle);
+            });
+
+            $(".btn").click(function () {
+                var audio = document.getElementById("audio-box");
+                var fileName = $(this).prev(".get-title").val();
+                audio.src = '@Url.Content("~/Songs/")' + fileName;
+                audio.play();
+
+                $(".show-title-container");
+                $("#show-title").text(fileName);
+            });
+        });
+    </script>
+}
