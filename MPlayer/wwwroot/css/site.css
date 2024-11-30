@@ -3,9 +3,9 @@ html {
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -23,23 +23,34 @@ body {
 
 .music-player-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     height: 90vh;
+    border-radius: 6px;
+}
+
+#show-title {
+    color:black;
+    font-weight: bold;
 }
 
 .opt-music {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
     height: 100%;
-    padding: 30px;
+    overflow-y: auto;
+    border-radius: 6px;
 }
 
 .opt-music .btn {
     padding: 10px;
     height: 56px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    font-weight: bold;
 }
 
 .show-title-container {
@@ -48,7 +59,6 @@ body {
     align-items: center;
     width: 500px;
     height: 40px;
-    
 }
 
 .mp3-box {
@@ -56,12 +66,37 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 50%;
-    height: 100%;
+}
+
+.disc {
+    z-index: 99;
+    position: relative;
+    top: 85px;
+    right: 240px;
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    background-color: aquamarine;
+    box-shadow: 10px 10px 0px #252525;
+}
+
+.disc img {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn {
+    background-color: #FFB86B;
+    color: #252525;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 10px 10px 0px #252525;
 }
 
 audio {
-    background-color: #ffd800;
+    background-color: #FFB86B;
     height: 100px;
     width: 500px;
     border-radius: 8px;
@@ -69,5 +104,5 @@ audio {
 }
 
 audio::-webkit-media-controls-panel {
-    background-color: #ffd800;
+    background-color: #FFB86B;
 }

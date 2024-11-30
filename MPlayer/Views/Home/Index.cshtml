@@ -1,12 +1,15 @@
-﻿@model List<string>
+﻿@model List<MPlayer.Models.SongModel>
 
 <h1>Music Player</h1>
 <div class="music-player-container">
     <div class="mp3-box">
+        <div class="disc">
+            <img src="https://i.redd.it/py1i0j309go61.png" alt="Disc" />
+        </div>
         <div class="show-title-container">
             <marquee id="show-title"></marquee>
         </div>
-        
+
         <audio controls id="audio-box">
             <source src="" type="audio/mpeg">
             Your browser does not support the audio element.
@@ -14,10 +17,11 @@
     </div>
 
     <aside class="opt-music">
-        @foreach (var file in Model)
+        @foreach (var song in Model)
         {
-            <input type="hidden" class="get-title" value="@System.IO.Path.GetFileName(file)" />
-            <button class="btn btn-dark"></button>
+            <input type="hidden" class="get-title" value="@song.Title" />
+
+            <button class="btn btn-dark song"></button>
         }
     </aside>
 </div>
@@ -25,24 +29,104 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $(".opt-music .btn").each(function (index) {
-                var audioTitle = $(".get-title").eq(index).val();
-                var maxTitleLength = 20;
-                if (audioTitle.length > maxTitleLength) {
-                    audioTitle = audioTitle.substring(0, maxTitleLength) + '...';
+            const maxTitleLength = 20;
+            const fileList = [];
+            const songArray = [];
+            let isPlaying = false;
+            let angle = 0;
+            let animationFrameId;
+            let currentSongIndex = 0;
+
+            // Initialize the player
+            initializePlayer();
+
+            function initializePlayer() {
+                $(".get-title").each(function () {
+                    fileList.push($(this).val());
+                });
+
+                showTitles();
+                setupSongSelection();
+                setupAudioManager();
+            }
+
+            // Function responsible for animating the disc
+            function rotateDisc() {
+                if (isPlaying) {
+                    angle += 0.5;
+                    $(".disc img").css("transform", "rotate(" + angle + "deg)");
+                    animationFrameId = requestAnimationFrame(rotateDisc);
                 }
-                $(this).text(audioTitle);
-            });
+            }
 
-            $(".btn").click(function () {
-                var audio = document.getElementById("audio-box");
-                var fileName = $(this).prev(".get-title").val();
-                audio.src = '@Url.Content("~/Songs/")' + fileName;
-                audio.play();
+            // Manage audio events
+            function setupAudioManager() {
+                $("#audio-box").on("pause", function () {
+                    isPlaying = false;
+                });
 
-                $(".show-title-container");
+                $("#audio-box").on("play", function () {
+                    if (!isPlaying) {
+                        isPlaying = true;
+                        rotateDisc();
+                    }
+                });
+
+                $("#audio-box").on("ended", function () {
+                    isPlaying = false;
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+
+                    if (currentSongIndex === songArray.length - 1) {
+                        currentSongIndex = 0;
+                    } else {
+                        currentSongIndex++;
+                    }
+
+                    playSong(songArray[currentSongIndex]);
+                });
+            }
+
+            // Handle song selection
+            function setupSongSelection() {
+                $(".btn").click(function () {
+                    const fileName = $(this).prev(".get-title").val();
+                    currentSongIndex = fileList.indexOf(fileName);
+                    playSong(fileName);
+                });
+            }
+
+            // Play the selected song
+            function playSong(fileName) {
+                $("#audio-box")
+                    .attr("src", '@Url.Content("~/Songs/")' + fileName);
+
+                $("#audio-box")[0].play();
+                
+                isPlaying = true;
+                angle = 0;
+
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+
+                rotateDisc();
                 $("#show-title").text(fileName);
-            });
+            }
+
+            // Display song titles
+            function showTitles() {
+                $(".opt-music .btn").each(function (index) {
+                    let audioTitle = $(".get-title").eq(index).val();
+                    songArray.push(audioTitle);
+
+                    if (audioTitle.length > maxTitleLength) {
+                        audioTitle = audioTitle.substring(0, maxTitleLength) + '...';
+                    }
+                    $(this).text(audioTitle);
+                });
+            }
         });
     </script>
 }

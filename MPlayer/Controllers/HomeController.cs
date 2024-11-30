@@ -16,18 +16,30 @@ namespace MPlayer.Controllers
 
         public IActionResult Index()
         {
-            List<string> files = GetAllSongFiles();
+            List<SongModel> files = GetAllSongFiles();
             
             return View(files);
         }
-        public List<string> GetAllSongFiles()
+        public List<SongModel> GetAllSongFiles()
         {
             string directory = Directory.GetCurrentDirectory();
             string path = Path.Combine(directory, "wwwroot", "Songs");
+            var songs = new List<SongModel>();
 
             List<string> files = Directory.GetFiles(path, "*.mp3", SearchOption.AllDirectories).ToList();
 
-            return files;
+            foreach(var file in files)
+            {
+                songs.Add(new SongModel
+                {
+                    FilePath = file,
+                    Title = Path.GetFileName(file),
+                });
+            }
+
+            Console.WriteLine(songs);
+
+            return songs;
         }
     }
 }
